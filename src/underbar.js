@@ -83,7 +83,7 @@ var _ = { };
     }
 
     return -1;
-    
+
     // TIP: Here's an example of a function that needs to iterate, which we've
     // implemented for you. Instead of using a standard `for` loop, though,
     // it uses the iteration helper `each`, which you will need to write.
@@ -104,6 +104,16 @@ var _ = { };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, iterator) {
+    var result = [];
+
+    collection.forEach(function(element) {
+      if (iterator(element) === false) {
+        result.push(element);
+      }
+    });
+
+    return result;
+    
     // TIP: see if you can re-use _.select() here, without simply
     // copying code in and modifying it
   };
