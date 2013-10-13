@@ -196,6 +196,16 @@ var _ = { };
   //   }, 0); // should be 6
   //
   _.reduce = function(collection, iterator, initialValue) {
+
+    if (arguments.length === 2) {
+      initialValue = 0;
+    }
+
+    for (var i = 0; i < collection.length; i++) {
+      initialValue = iterator(initialValue, collection[i]);
+    }
+
+    return initialValue;
   };
 
   // Determine if the array or object contains a given value (using `===`).
