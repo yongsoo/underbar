@@ -223,6 +223,29 @@ var _ = { };
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+    if (arguments.length === 1) {
+      return _.reduce(collection, function(check, item) {
+        if (check === false) {
+          return false;
+        }
+        return item;
+      }, true);
+    }
+
+    if (collection.length === 1) {
+      if (collection[0] === 1) {
+        return true;
+      } else if (collection[0] === 0) {
+        return false;
+      }
+    }
+
+    return _.reduce(collection, function(check, item) {
+      if(check === false || check === undefined) {
+        return false;
+      }
+      return iterator(item);
+    }, true);
     // TIP: Try re-using reduce() here.
   };
 
