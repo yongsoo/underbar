@@ -256,6 +256,29 @@ var _ = { };
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    if (arguments.length === 1) {
+      return _.reduce(collection, function(check, item) {
+        if (check === true || (typeof check === "string" && check !== '')) {
+          return true;
+        }
+        return item;
+      }, false);
+    }
+
+    if (collection.length === 1) {
+      if (collection[0] === 1 || (typeof collection[0] === "string" && check !== '')) {
+        return true;
+      } else if (collection[0] === 0) {
+        return false;
+      }
+    }
+
+    return _.reduce(collection, function(check, item) {
+      if(check === true || (typeof check === "string" && check !== '')) {
+        return true;
+      }
+      return iterator(item);
+    }, false);
   };
 
 
