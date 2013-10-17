@@ -381,6 +381,33 @@ var _ = { };
 
   // Shuffle an array.
   _.shuffle = function(array) {
+    var result = [];
+    var noRepeatedIndexCheck = [];
+    var arrLength = array.length;
+    var count = 0;
+
+    function randNum() {
+      return Math.floor(Math.random()*arrLength);
+    }
+  
+    while (count < arrLength) {
+      random = randNum();
+
+      repeated = _.reduce(noRepeatedIndexCheck, function(isRepeated, num) {
+        if(isRepeated) {
+          return true;
+        }
+        return num === random;
+      }, false);
+
+      if (!repeated) {
+        noRepeatedIndexCheck.push(random);      
+        result.push(array[random]);
+        count++;
+      }
+    }
+
+    return result;
   };
 
 
