@@ -120,26 +120,13 @@ var _ = { };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
-    var result = [];
+    var results = {};
 
-    result.push(array[0]);
-
-    array.forEach(function(element) {
-      for (var i = 0; i < result.length; i++) {
-        if (element !== result[i]) {
-          status = true;
-        } else {
-          status = false;
-          break;
-        }
-      }
-
-      if (status) {
-        result.push(element);
-      }
-    });
-
-    return result;
+    for(var i = 0; i < array.length; i++) {
+        results[array[i]] = true;
+    }
+    
+    return Object.keys(results);
 
   };
 
@@ -181,7 +168,10 @@ var _ = { };
   // Calls the method named by methodName on each value in the list.
   _.invoke = function(list, methodName, args) {
     return _.map(list, function(item) {
-      return methodName.apply(item);
+      if (typeof methodName === 'string') {
+        methodName = item[methodName];
+      }
+      return methodName.apply(item, args);
     });
   };
 
@@ -199,38 +189,34 @@ var _ = { };
   //   }, 0); // should be 6
   //
   _.reduce = function(collection, iterator, initialValue) {
-
+  
     if (arguments.length === 2) {
-      initialValue = 0;
+      var initial = true;
     }
-
-    for (var i = 0; i < collection.length; i++) {
-      initialValue = iterator(initialValue, collection[i]);
-    }
-
-    return initialValue;
-  };
+  
+      _.each(collection, function(val){
+          if(initial) {
+              initial = false;
+              initialValue = val;
+          } else {
+              initialValue = iterator(initialValue, val);
+          }
+      });
+      
+      return initialValue;
+  }
 
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
-    if (Array.isArray(collection)) {
-      return _.reduce(collection, function(wasFound, item) {
-        if(wasFound) {
-          return true;
-        }
-        return item === target;
+    return _.reduce(collection, function(wasFound, item) {
+      if(wasFound) {
+        return true;
+      }
+      return item === target;
       }, false);
-    } else {
-      return _.reduce(collection, function(wasFound, item) {
-        if(wasFound) {
-          return true;
-        }
-        return Object.keys(item) === target;
-      }, false);
-    }
-  };
+    };
 
 
   // Determine whether all of the elements match a truth test.
@@ -322,15 +308,6 @@ var _ = { };
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
-    _.each(arguments, function(arg) {
-      if (!Object.keys(arg)) {
-        for (var key in arg) {
-          obj[key] = arg[key];
-        }
-      }
-    });
-
-    return obj;
   };
 
 
@@ -371,17 +348,6 @@ var _ = { };
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    var result = func(value) { return value; };
-
-    return function() {
-      if (result === func.apply(this, arguments) {
-        return result;
-      } else {
-        result = func.apply(this, arguments);
-      }
-
-      return result;
-    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -418,9 +384,9 @@ var _ = { };
     }
   
     while (count < arrLength) {
-      random = randNum();
+      var random = randNum();
 
-      repeated = _.reduce(noRepeatedIndexCheck, function(isRepeated, num) {
+      var repeated = _.reduce(noRepeatedIndexCheck, function(isRepeated, num) {
         if(isRepeated) {
           return true;
         }
