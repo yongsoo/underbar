@@ -315,7 +315,7 @@ var _ = { };
         } 
       }
     });
-    
+
     return obj;
   };
 
@@ -357,7 +357,14 @@ var _ = { };
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-  };
+    var results = {};
+    var currentResults = function(value) { return value; };
+
+    return function() {
+        var key = currentResults.apply(this, arguments);
+        return results.hasOwnProperty(key) ? results[key] : (results[key] = func.apply(this, arguments));
+      };
+    };
 
   // Delays a function for the given number of milliseconds, and then calls
   // it with the arguments supplied.
